@@ -18,10 +18,12 @@ class DbSessionMiddleware(BaseMiddleware):
             event: TelegramObject,
             data: Dict[str, Any],
     ) -> Any:
+
         async with self.session_pool() as session:
             data["session"] = session
             if isinstance(event.event, Message):
                 message = event.event
+
                 # Проверка на забененного пользователя
                 isbanned = await check_user_group(message.from_user.id, "banned", session)
                 # Проверяем на приматность чата и чтоб пользователь не был ботом и забаненным
